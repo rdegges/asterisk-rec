@@ -1,0 +1,45 @@
+           _            _     _
+  __ _ ___| |_ ___ _ __(_)___| | __     _ __ ___  ___
+ / _` / __| __/ _ \ '__| / __| |/ /____| '__/ _ \/ __|
+| (_| \__ \ ||  __/ |  | \__ \   <_____| | |  __/ (__
+ \__,_|___/\__\___|_|  |_|___/_|\_\    |_|  \___|\___|
+
+A generic Asterisk sound file recorder.
+
+
+META
+====
+
+author: Randall Degges
+email: rdegges@gmail.com
+status: maintained, in development
+
+
+PURPOSE
+=======
+
+asterisk-rec aims to be a simple, pluggable Asterisk subroutine that allows you
+to record sound files for usage in your system, in a dynamic and pragmatic way.
+
+Let's say you are building an Asterisk service that allows callers to record
+custom voicemail greetings. Typically, you'd have to write code to:
+
+    - Record the greeting.
+    - Verify that the new recording is acceptable, and should replace the
+      current greeting.
+    - Allow the caller to (optionally) switch back to their old greeting.
+
+Depending on what you're trying to do, this could be a big burden, especially
+when multiple versions of sound files are involved.
+
+asterisk-rec allows you to outsource this logic in a clean manner, simply add
+the following to your dialplan code, and you'll have the recording logic
+embedded:
+
+    ...
+    exten => s,n,Gosub(rec,s,1(/path/to/recording.wav))
+    exten => s,n,ExecIf($[ ${GOSUB_RETVAL} ]?Playback(success):Playback(failure))
+    ...
+
+Furthermore, asterisk-rec is fully customizable--so you can add your own custom
+sound prompts if you don't like the defaults.
